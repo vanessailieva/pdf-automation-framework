@@ -87,7 +87,7 @@ export class LoginPage {
 	}
 
 	async expectSuccessfulLogin(username: string): Promise<void> {
-		await expect(this.page).toHaveURL('http://localhost:8080/');
+		await expect(this.page).toHaveURL('/');
 		await expect(
 			this.page
 				.getByRole('button', { name: 'Open settings' })
