@@ -32,7 +32,7 @@ pipeline {
 
     post {
         always {
-            archiveArtifacts artifacts: 'playwright-report/**/*', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'playwright-report/**/*, test-results/**/*', allowEmptyArchive: true
         }
     }
 }
