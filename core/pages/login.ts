@@ -31,6 +31,7 @@ export class LoginPage {
 	}
 
 	async navigateToLocalEnvironment(): Promise<void> {
+		// Local URL: http://localhost:8080/login
 		await this.page.goto('/login');
 	}
 
