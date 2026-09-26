@@ -14,7 +14,7 @@ export class LoginPage {
 		this.usernameInput = page.getByRole('textbox', { name: 'Username' });
 		this.passwordInput = page.getByRole('textbox', { name: 'Password' });
 		this.loginButton = page.getByRole('button', { name: 'Login' });
-		this.loginPanel = page.locator('form').locator('..').locator('..');
+		this.loginPanel = page.locator('form');
 		this.cookieConsentDialog = page.getByRole('dialog', {
 			name: 'How we use Cookies',
 		});
@@ -95,7 +95,7 @@ export class LoginPage {
 		await expect(this.page).toHaveURL(/\/(?:editor)?$/);
 		await expect(
 			this.page.getByRole('button', {
-				name: new RegExp(`${username}\\s+—\\s+Account`, 'i'),
+				name: `${username} — Account`,
 			}),
 		).toBeVisible();
 	}

@@ -5,7 +5,7 @@ export class SettingsPage {
 	private readonly logOutButton: Locator;
 
 	constructor(private readonly page: Page) {
-		this.settingsModal = page.locator('body');
+		this.settingsModal = page.locator('.settings-page');
 		this.logOutButton = this.settingsModal.getByRole('button', {
 			name: /log out/i,
 		});

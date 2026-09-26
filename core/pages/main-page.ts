@@ -15,8 +15,8 @@ export class MainPage {
 		this.documentsPanel = page
 			.getByText('No files yet', { exact: true })
 			.locator('..');
-		this.settingsModal = page.locator('body');
-		this.closeSettingsModalButton = page.getByRole('button', {
+		this.settingsModal = page.locator('.settings-page');
+		this.closeSettingsModalButton = this.settingsModal.getByRole('button', {
 			name: 'Close',
 		});
 		this.welcomeModal = page
