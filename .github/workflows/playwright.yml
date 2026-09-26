@@ -14,6 +14,12 @@ jobs:
         image: docker.stirlingpdf.com/stirlingtools/stirling-pdf
         ports:
           - 8080:8080
+        env:
+          DOCKER_ENABLE_SECURITY: "true"
+          SECURITY_ENABLELOGIN: "true"
+          SECURITY_INITIALLOGIN_USERNAME: "admin"
+          SECURITY_INITIALLOGIN_PASSWORD: "changeme123"
+          SECURITY_CUSTOMGLOBALAPIKEY: "test-key-12345"
 
     steps:
       - uses: actions/checkout@v4
@@ -24,6 +30,16 @@ jobs:
         run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+      - name: Wait for Stirling-PDF to be ready
+        run: |
+          for i in {1..30}; do
+            if curl -sf -o /dev/null -w "%{http_code}" http://localhost:8080/login | grep -q "200"; then
+              echo "Stirling-PDF is up"
+              break
+            fi
+            echo "Waiting for Stirling-PDF... ($i)"
+            sleep 3
+          done
       - name: Run Playwright tests
         run: npx playwright test
         env:
