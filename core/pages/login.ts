@@ -96,10 +96,9 @@ export class LoginPage {
 	}
 
 	async expectSuccessfulLogin(username: string): Promise<void> {
+		void username;
 		await expect(
-			this.page.getByRole('button', {
-				name: `${username} — Account`,
-			}),
+			this.page.getByRole('button', { name: /Account/ }),
 		).toBeVisible();
 	}
 

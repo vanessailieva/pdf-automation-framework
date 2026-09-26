@@ -7,14 +7,7 @@ test('matches the login panel and validation messages', async ({ loginPage }) =>
 		await loginPage.navigateToLocalEnvironment();
 	});
 
-	await test.step('compare the cookie consent dialog when present', async () => {
-		if (await loginPage.hasCookieConsentDialog()) {
-			await expect(loginPage.cookieConsentDialog).toHaveScreenshot(
-				'cookie-consent-dialog.png',
-			);
-			return;
-		}
-
+	await test.step('verify the cookie consent dialog is absent', async () => {
 		await expect(loginPage.cookieConsentDialog).toHaveCount(0);
 	});
 
