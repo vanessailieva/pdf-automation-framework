@@ -12,7 +12,10 @@ test('matches the login panel and validation messages', async ({ loginPage }) =>
 			await expect(loginPage.cookieConsentDialog).toHaveScreenshot(
 				'cookie-consent-dialog.png',
 			);
+			return;
 		}
+
+		await expect(loginPage.cookieConsentDialog).toHaveCount(0);
 	});
 
 	await test.step('dismiss cookie consent and compare the login panel', async () => {
