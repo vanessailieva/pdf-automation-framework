@@ -1,5 +1,8 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 
+const escapeForRegExp = (value: string): string =>
+	value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 export class LoginPage {
 	private readonly usernameInput: Locator;
 	private readonly passwordInput: Locator;
@@ -96,10 +99,12 @@ export class LoginPage {
 	}
 
 	async expectSuccessfulLogin(username: string): Promise<void> {
-		void username;
-		await expect(
-			this.page.getByRole('button', { name: /Account/ }),
-		).toBeVisible();
+		const accountButton = this.page.getByRole('button', { name: /Account/ });
+
+		await expect(accountButton).toBeVisible();
+		await expect(accountButton).toHaveAccessibleName(
+			new RegExp(`^${escapeForRegExp(username)}\\s+—\\s+Account$`, 'i'),
+		);
 	}
 
 	async expectUnsuccessfulLogin(): Promise<void> {

@@ -10,7 +10,7 @@ export class MainPage {
 
 	constructor(page: Page) {
 		this.openSettingsButton = page.getByRole('button', {
-			name: /Account/,
+			name: /.+\s+—\s+Account$/,
 		});
 		this.documentsPanel = page
 			.getByText('No files yet', { exact: true })
