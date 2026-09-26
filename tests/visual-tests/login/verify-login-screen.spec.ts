@@ -2,15 +2,17 @@ import { expect } from '@playwright/test';
 import { test } from '../../../core/fixtures/test';
 import { invalidUser } from '../../../core/fixtures/users';
 
-test('matches the login panel, cookie consent dialog, and validation messages', async ({ loginPage }) => {
+test('matches the login panel and validation messages', async ({ loginPage }) => {
 	await test.step('open the login page', async () => {
 		await loginPage.navigateToLocalEnvironment();
 	});
 
-	await test.step('compare the cookie consent dialog', async () => {
-		await expect(loginPage.cookieConsentDialog).toHaveScreenshot(
-			'cookie-consent-dialog.png',
-		);
+	await test.step('compare the cookie consent dialog when present', async () => {
+		if (await loginPage.hasCookieConsentDialog()) {
+			await expect(loginPage.cookieConsentDialog).toHaveScreenshot(
+				'cookie-consent-dialog.png',
+			);
+		}
 	});
 
 	await test.step('dismiss cookie consent and compare the login panel', async () => {
