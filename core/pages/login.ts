@@ -92,11 +92,11 @@ export class LoginPage {
 	}
 
 	async expectSuccessfulLogin(username: string): Promise<void> {
-		await expect(this.page).toHaveURL('/');
+		await expect(this.page).toHaveURL(/\/(?:editor)?$/);
 		await expect(
-			this.page
-				.getByRole('button', { name: 'Open settings' })
-				.getByText(username, { exact: true }),
+			this.page.getByRole('button', {
+				name: new RegExp(`${username}\\s+—\\s+Account`, 'i'),
+			}),
 		).toBeVisible();
 	}
 
