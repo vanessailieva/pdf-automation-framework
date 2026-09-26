@@ -14,7 +14,7 @@ export class LoginPage {
 		this.usernameInput = page.getByRole('textbox', { name: 'Username' });
 		this.passwordInput = page.getByRole('textbox', { name: 'Password' });
 		this.loginButton = page.getByRole('button', { name: 'Login' });
-		this.loginPanel = page.locator('div[class*="authLeftPanel"]');
+		this.loginPanel = page.locator('form');
 		this.cookieConsentDialog = page.getByRole('dialog', {
 			name: 'How we use Cookies',
 		});
@@ -36,14 +36,18 @@ export class LoginPage {
 	}
 
 	async dismissCookieConsent(): Promise<void> {
-		const cookieBannerIsVisible = await this.rejectCookieConsentButton
-			.waitFor({ state: 'visible', timeout: 5_000 })
-			.then(() => true)
-			.catch(() => false);
+		const cookieBannerIsVisible = await this.hasCookieConsentDialog();
 
 		if (cookieBannerIsVisible) {
 			await this.rejectCookieConsentButton.click({ timeout: 5_000 });
 		}
+	}
+
+	async hasCookieConsentDialog(): Promise<boolean> {
+		return this.cookieConsentDialog
+			.waitFor({ state: 'visible', timeout: 5_000 })
+			.then(() => true)
+			.catch(() => false);
 	}
 
 	async fillCredentials(username: string, password: string): Promise<void> {
@@ -88,11 +92,11 @@ export class LoginPage {
 	}
 
 	async expectSuccessfulLogin(username: string): Promise<void> {
-		await expect(this.page).toHaveURL('/');
+		await expect(this.page).toHaveURL(/\/(?:editor)?$/);
 		await expect(
-			this.page
-				.getByRole('button', { name: 'Open settings' })
-				.getByText(username, { exact: true }),
+			this.page.getByRole('button', {
+				name: `${username} — Account`,
+			}),
 		).toBeVisible();
 	}
 

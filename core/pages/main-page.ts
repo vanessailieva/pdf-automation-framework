@@ -10,22 +10,20 @@ export class MainPage {
 
 	constructor(page: Page) {
 		this.openSettingsButton = page.getByRole('button', {
-			name: 'Open settings',
+			name: /Account/,
 		});
 		this.documentsPanel = page
 			.getByText('No files yet', { exact: true })
 			.locator('..');
-		this.settingsModal = page
-			.getByRole('dialog')
-			.filter({ hasText: 'Account Settings' });
+		this.settingsModal = page.locator('.settings-page');
 		this.closeSettingsModalButton = this.settingsModal.getByRole('button', {
 			name: 'Close',
 		});
 		this.welcomeModal = page
 			.getByRole('dialog')
-			.filter({ hasText: 'Welcome to Stirling' });
+			.filter({ hasText: 'Do you want to help make Stirling PDF better?' });
 		this.closeWelcomeModalButton = this.welcomeModal.getByRole('button', {
-			name: /^$/,
+			name: 'No',
 		});
 	}
 
@@ -38,10 +36,16 @@ export class MainPage {
 	}
 
 	async navigateToSettingsTab(tabName: string): Promise<void> {
-		await this.settingsModal.getByText(tabName, { exact: true }).click();
+		await this.settingsModal.getByRole('link', { name: tabName, exact: true }).click();
 	}
 
 	async closeWelcomeModal(): Promise<void> {
-		await this.closeWelcomeModalButton.click();
+		const analyticsModalIsVisible = await this.welcomeModal
+			.isVisible()
+			.catch(() => false);
+
+		if (analyticsModalIsVisible) {
+			await this.closeWelcomeModalButton.click();
+		}
 	}
 }
