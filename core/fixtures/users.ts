@@ -1,6 +1,6 @@
 export const validUser = {
-	username: process.env.E2E_USERNAME ?? 'admin',
-	password: process.env.E2E_PASSWORD ?? 'changeme123',
+	username: process.env.E2E_USERNAME || 'admin',
+	password: process.env.E2E_PASSWORD || 'changeme123',
 };
 
 export const invalidUser = {
