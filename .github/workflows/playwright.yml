@@ -41,12 +41,20 @@ jobs:
             fi
             sleep 3
           done
+      - name: Dump Stirling-PDF container logs
+        run: |
+          docker ps -a
+          echo "---- Stirling-PDF logs ----"
+          docker logs $(docker ps -aqf "ancestor=docker.stirlingpdf.com/stirlingtools/stirling-pdf:2.14.3") 2>&1 | tail -200
       - name: Run Playwright tests
         run: npx playwright test
         env:
           CI: true
           E2E_USERNAME: ${{ secrets.E2E_USERNAME }}
           E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+      - name: Dump Stirling-PDF logs on failure
+        if: failure()
+        run: docker logs $(docker ps -aqf "ancestor=docker.stirlingpdf.com/stirlingtools/stirling-pdf:2.14.3") 2>&1 | tail -300
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
