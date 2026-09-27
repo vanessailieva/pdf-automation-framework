@@ -11,7 +11,7 @@ jobs:
 
     services:
       stirling-pdf:
-        image: docker.stirlingpdf.com/stirlingtools/stirling-pdf
+        image: docker.stirlingpdf.com/stirlingtools/stirling-pdf:2.14.3
         ports:
           - 8080:8080
         env:
@@ -30,11 +30,17 @@ jobs:
         run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      - name: Wait for Stirling-PDF to fully warm up
+      - name: Wait for Stirling-PDF to be ready
         run: |
-          echo "Sleeping 60s to let Stirling-PDF finish booting..."
-          sleep 60
-          curl -s http://localhost:8080/login -o /dev/null -w "Final check - HTTP %{http_code}\n"
+          for i in {1..30}; do
+            status=$(curl -sf -o /dev/null -w "%{http_code}" http://localhost:8080/login || echo "000")
+            echo "Attempt $i: HTTP $status"
+            if [ "$status" = "200" ]; then
+              echo "Stirling-PDF is up"
+              break
+            fi
+            sleep 3
+          done
       - name: Run Playwright tests
         run: npx playwright test
         env:
