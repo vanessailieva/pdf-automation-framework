@@ -33,13 +33,16 @@ jobs:
       - name: Wait for Stirling-PDF to be ready
         run: |
           for i in {1..30}; do
-            if curl -sf -o /dev/null -w "%{http_code}" http://localhost:8080/login | grep -q "200"; then
+            status=$(curl -sf -o /dev/null -w "%{http_code}" http://localhost:8080/login || echo "000")
+            echo "Attempt $i: HTTP $status"
+            if [ "$status" = "200" ]; then
               echo "Stirling-PDF is up"
               break
             fi
-            echo "Waiting for Stirling-PDF... ($i)"
             sleep 3
           done
+      - name: Debug - fetch login page HTML
+        run: curl -sv http://localhost:8080/login | head -c 3000
       - name: Run Playwright tests
         run: npx playwright test
         env:
